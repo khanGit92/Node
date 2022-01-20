@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ public class NodeService {
 	@Autowired
 	private NodeRepository nodeRepository;
 	
+	@Transactional
 	public void saveNode(Node node) throws DuplicateNodeException {
 		try {
 		nodeRepository.save(node);
@@ -23,10 +26,12 @@ public class NodeService {
 			throw new DuplicateNodeException("Node already exists wth the name : "+ node.getName());
 		}
 	}
+	
 	public Optional<Node> findNode(String name) {
 		return nodeRepository.findByName(name);
 	}
 	
+	@Transactional
 	public void linkNode(Composite source, Node target) {
 		source.addNode(target);
 		nodeRepository.save(source);
